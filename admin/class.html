@@ -374,7 +374,7 @@
                     <div class="toast-header">
                       <i class="bx bx-bell me-2"></i>
                       <div class="me-auto fw-semibold">Success</div>
-                      <small>11 mins ago</small>
+                      <small>1 sec ago</small>
                       <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
                     </div>
                     <div class="toast-body">
@@ -393,7 +393,7 @@
                     <div class="toast-header">
                       <i class="bx bx-bell me-2"></i>
                       <div class="me-auto fw-semibold">Error</div>
-                      <small>11 mins ago</small>
+                      <small>1 sec ago</small>
                       <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
                     </div>
                     <div class="toast-body">
@@ -478,6 +478,36 @@
     </div>
 <!-- section JS-->
 <script>
+
+  //Delete Student
+  $(document).ready(function() {
+      $(document).on('click', '.confirm-delete-btn', function() {
+          var studentId = $(this).data('student-id');
+          var sectionId = $(this).data('section-id');
+          var modal = $(this).closest('.modal');
+
+          $.ajax({
+              type: "POST",
+              url: "../controllers/delete-student.php",
+              data: { student_id: studentId, section_id: sectionId },
+              dataType: "json",
+              success: function(response) {
+                  if (response.status === "success") {
+                      showToast('successToast', "Student deleted successfully!");
+                      modal.modal('hide'); // Hide the modal after success
+                      loadStudents(); // Reload the students list or any necessary parts of the page
+                  } else {
+                      showToast('errorToast', response.message);
+                  }
+              },
+              error: function(error) {
+                  console.error("An error occurred:", error);
+                  showToast('errorToast', "An error occurred during deletion.");
+              }
+          });
+      });
+  });
+
 
   //Edit Student
   $(document).ready(function() {
@@ -653,7 +683,7 @@
                                                 </div>
                                                 <div class="modal-footer">
                                                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                  <a href="../controllers/delete-student.php?student_id=${student.student_id}&section_id=${student.section_id}" class="btn btn-danger">Delete</a>
+                                                   <button type="button" class="btn btn-danger confirm-delete-btn" data-student-id="${student.student_id}" data-section-id="${student.section_id}">Delete</button>
                                                 </div>
                                               </div>
                                             </div>

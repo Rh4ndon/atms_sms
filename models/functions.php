@@ -53,3 +53,20 @@ function getRecordMultiTable($table1, $table2, $onCondition, $whereCondition)
     $result = mysqli_query($conn, $query);
     return mysqli_fetch_assoc($result);
 }
+
+function getLastAttendanceRecord($student_id)
+{
+    global $conn;
+    $query = "SELECT * FROM attendance WHERE student_id = $student_id ORDER BY time DESC LIMIT 1";
+    $result = mysqli_query($conn, $query);
+    return mysqli_fetch_assoc($result);
+}
+
+function isTimeIn($student_id, $date)
+{
+    global $conn;
+    $query = "SELECT * FROM attendance WHERE student_id = $student_id AND date = '$date' ORDER BY time DESC LIMIT 1";
+    $result = mysqli_query($conn, $query);
+    $last_record = mysqli_fetch_assoc($result);
+    return $last_record && $last_record['remark'] === 'time-in';
+}

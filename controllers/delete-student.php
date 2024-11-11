@@ -1,9 +1,9 @@
 <?php
 include '../models/functions.php';
 
-if (isset($_GET['student_id']) && isset($_GET['section_id'])) {
-    $student_id = $_GET['student_id'];
-    $section_id = $_GET['section_id'];
+if (isset($_POST['student_id']) && isset($_POST['section_id'])) {
+    $student_id = $_POST['student_id'];
+    $section_id = $_POST['section_id'];
 
     // Fetch the student record to get the profile picture filename
     $student = getRecord('students', 'student_id = ' . $student_id);
@@ -19,12 +19,13 @@ if (isset($_GET['student_id']) && isset($_GET['section_id'])) {
         // Delete the student record from the database
         deleteRecord('students', 'student_id = ' . $student_id);
 
-        // Redirect to the class page
-        header('Location: ../admin/class.html?section_id=' . $section_id);
-        exit;
+        // Send a success response
+        echo json_encode(['status' => 'success']);
     } else {
-        // Student record not found, redirect with an error message
-        header('Location: ../admin/class.html?section_id=' . $section_id . '&error=Student not found');
-        exit;
+        // Student record not found, send an error response
+        echo json_encode(['status' => 'error', 'message' => 'Student not found']);
     }
+} else {
+    // Invalid request, send an error response
+    echo json_encode(['status' => 'error', 'message' => 'Invalid request']);
 }
