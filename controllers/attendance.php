@@ -2,6 +2,9 @@
 include '../models/functions.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Set the time zone to Manila
+    date_default_timezone_set('Asia/Manila');
+
     $student_id = $_POST['student_id'];
 
     // Fetch student info for verification
@@ -18,15 +21,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Avoid duplicate records within 15 seconds
-    $current_time = time();
+    $current_time = new DateTime();
     $last_record = getLastAttendanceRecord($student_id);
-    if ($last_record && ($current_time - strtotime($last_record['time'])) < 15) {
-        echo json_encode(['status' => 'warning', 'message' => 'Attendance has already been recorded. Please wait 15 seconds before trying again.']);
-        exit;
-    }
 
-    // Set the time zone to Manila
-    date_default_timezone_set('Asia/Manila');
+    if ($last_record) {
+        $last_record_datetime = new DateTime($last_record['date'] . ' ' . $last_record['time']);
+        $seconds_difference = $current_time->getTimestamp() - $last_record_datetime->getTimestamp();
+
+        // Check the time difference
+        if ($seconds_difference < 20) {
+            echo json_encode(['status' => 'warning', 'message' => 'Attendance has already been recorded. Please wait 20 seconds before trying again.']);
+            exit;
+        }
+    }
 
     // Record the attendance
     $date = date('Y-m-d');
@@ -43,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (insertRecord('attendance', $data)) {
         // Send SMS notification
         $number = $student['parent_contact'];
-        $message = "Your child " . $student['name'] . " has " . $remark . " at " . $time;
+        $message = "Your child " . $student['first_name'] . " " . $student['last_name'] . " has " . $remark . " at " . $time;
         sendSMS($number, $message);
 
         echo json_encode(['status' => 'success', 'student' => $student]);

@@ -71,7 +71,7 @@
     <!-- Content -->  
      
     <br>
-    <a href="admin/dashboard.html" class="btn btn-primary float-end me-3 invisible">Admin</a>
+    <a href="admin/index.html" class="btn btn-primary float-end me-3 invisible">Admin</a>
     <br><br><br>
     
     <div class="container-p-y mt-5">
@@ -114,7 +114,7 @@
                       <!-- Logo -->
                   
                       <div class="app-brand justify-content-center">
-                        <a href="admin/index.html" class="app-brand-link gap-2">
+                        <a href="admin/index.html" target="_blank" class="app-brand-link gap-2" title="Login as Admin, view and manage student records, and oversee sections" data-bs-toggle="tooltip" data-bs-placement="top">
                           <span class="app-brand-logo demo">
                             <svg
                               width="25"
@@ -322,7 +322,7 @@
                 setTimeout(function() {
                   clearStudentInfo();
                   hideToast('successToast');
-                }, 10000); // Clear after 10 seconds
+                }, 15000); // Clear after 10 seconds
               } else if (response.status === "warning") {
                 showToast('warningToast', response.message);
               } else {
