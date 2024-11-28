@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (insertRecord('attendance', $data)) {
         // Send SMS notification
-        $number = $student['parent_contact'];
+        $number = $student['parent_no'];
         $message = "Your child " . $student['first_name'] . " " . $student['last_name'] . " has " . $remark . " at " . $time;
         sendSMS($number, $message);
 

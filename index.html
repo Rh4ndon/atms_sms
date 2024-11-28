@@ -88,7 +88,7 @@
                        
                         <center>
 
-                        <h4 class="mb-3">Welcome to Name High School! 👋</h4>
+                        <h4 class="mb-3">Welcome to Lapaz National High School! 👋</h4>
                         
                         <img src="view/img/avatar.jpg" class="img-fluid rounded-circle mb-3 profile" width="300" height="300" alt="Student Profile">
                         <div class="d-flex justify-content-center">
@@ -170,7 +170,7 @@
                               </g>
                             </svg>
                           </span>
-                          <span class="app-brand-text demo text-body fw-bolder">School Name</span>
+                          <span class="app-brand-text demo text-body fw-bolder">Lapaz National High School</span>
                         </a>
                       </div>
                       <!-- /Logo -->
@@ -305,6 +305,26 @@
 
       //Attendance Script
       $(document).ready(function() {
+        var cooldown = false;
+      
+        $('#id-number').on('input', function() {
+          if (!cooldown) {
+            cooldown = true;
+      
+            setTimeout(function() {
+              $('#formAttendance').submit();
+            }, 100); // Short delay to ensure complete input
+      
+            // Clear the input field
+            $('#id-number').val('');
+      
+            // Reset the cooldown after 20 seconds
+            setTimeout(function() {
+              cooldown = false;
+            }, 5000); // 5 seconds cooldown period
+          }
+        });
+      
         $('#formAttendance').submit(function(event) {
           event.preventDefault();
           var studentId = $('#id-number').val();
@@ -316,7 +336,7 @@
             dataType: "json",
             success: function(response) {
               if (response.status === "success") {
-                $('#formAttendance')[0].reset();
+                $('#formAttendance')[0].reset(); // Clear the form inputs
                 showStudentInfo(response.student);
                 showToast('successToast', "Attendance recorded successfully!");
                 setTimeout(function() {
@@ -324,8 +344,10 @@
                   hideToast('successToast');
                 }, 15000); // Clear after 10 seconds
               } else if (response.status === "warning") {
+                $('#formAttendance')[0].reset(); // Clear the form inputs
                 showToast('warningToast', response.message);
               } else {
+                $('#formAttendance')[0].reset(); // Clear the form inputs
                 showToast('errorToast', response.message);
               }
             },
@@ -336,6 +358,8 @@
           });
         });
       });
+      
+      
       
       function showStudentInfo(student) {
         $('h4.mb-3').text("Welcome to Name High School! 👋");
